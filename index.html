@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Culpa de los Dos - Alfajores</title>
+    <style>
+        :root {
+            --bg-color: #f7f3ed;
+            --text-color: #4a362a;
+            --accent-color: #b08d5b;
+            --card-bg: #ffffff;
+            --border-color: #e5dac9;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- ENCABEZADO CON LOGO --- */
+        .header {
+            text-align: center;
+            padding: 20px 20px;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* --- PANTALLA DE INICIO --- */
+        #pantalla-inicio {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .btn-modo {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+            padding: 25px 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-modo:active {
+            transform: scale(0.98);
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-modo span {
+            display: block;
+            font-size: 13px;
+            font-weight: normal;
+            color: #888;
+            margin-top: 8px;
+            text-transform: none;
+        }
+
+        /* --- PANTALLA DEL CATÁLOGO --- */
+        #pantalla-catalogo {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px 20px 140px 20px;
+            box-sizing: border-box;
+        }
+
+        .btn-volver {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .category-title {
+            font-size: 20px;
+            text-align: center;
+            margin: 15px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0;
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 16px;
+            white-space: nowrap;
+        }
+
+        /* Descripción normal (párrafo) */
+        .product-desc {
+            font-size: 13px;
+            color: #666;
+            margin: 0 0 15px 0;
+            font-family: sans-serif;
+            line-height: 1.5;
+        }
+
+        /* NUEVO: Descripción de Boxes (Lista prolija) */
+        .box-flavor-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 5px 0 15px 0;
+            font-family: sans-serif;
+            font-size: 13px;
+            color: #666;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 columnas en PC */
+            gap: 8px 10px;
+        }
+
+        .box-flavor-list li {
+            position: relative;
+            padding-left: 14px;
+            line-height: 1.3;
+        }
+
+        .box-flavor-list li::before {
+            content: "•";
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: bold;
+        }
+
+        .stock-badge {
+            display: inline-block;
+            background-color: #f0ebe1;
+            color: var(--text-color);
+            font-size: 11px;
+            font-weight: bold;
+            font-family: sans-serif;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-qty {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: manipulation; 
+        }
+
+        .btn-qty:active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-qty:disabled {
+            background-color: #eee;
+            color: #aaa;
+            border-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .qty-value {
+            font-size: 16px;
+            font-weight: bold;
+            font-family: sans-serif;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+            box-sizing: border-box;
+            display: none; 
+            flex-direction: column;
+            gap: 15px;
+            z-index: 50;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .cart-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: sans-serif;
+        }
+
+        .cart-total-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .cart-total-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: sans-serif;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-whatsapp:disabled {
+            background-color: #a5d6a7;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 480px) {
+            .product-header { flex-direction: column; gap: 5px; }
+            .product-price { font-size: 15px; }
+            .btn-qty { width: 38px; height: 38px; font-size: 20px; }
+            /* En celulares, la lista de los Boxes pasa a 1 sola columna para que entre bien */
+            .box-flavor-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="dulcealmacen.jpg" alt="Logo Dulce Almacén" class="logo-img">
+    </div>
+
+    <!-- PANTALLA 1: BOTONERA INICIAL -->
+    <div id="pantalla-inicio">
+        <button class="btn-modo" onclick="iniciarPedido('dia')">
+            Para el Día
+            <span>Alfajores sueltos con stock inmediato</span>
+        </button>
+        <button class="btn-modo" onclick="iniciarPedido('finde')">
+            Encargar para el Finde
+            <span>Catálogo de Boxes Armados</span>
+        </button>
+    </div>
+
+    <!-- PANTALLA 2: CATÁLOGO -->
+    <div id="pantalla-catalogo">
+        <button class="btn-volver" onclick="volverInicio()">← Volver al inicio</button>
+        <div id="catalog-container"></div>
+    </div>
+
+    <div class="cart-bar" id="cart-bar">
+        <div class="cart-info">
+            <span class="cart-total-label">Total del pedido:</span>
+            <span class="cart-total-value" id="cart-total">$ 0</span>
+        </div>
+        <button class="btn-whatsapp" id="btn-confirm" disabled onclick="enviarWhatsApp()">Confirmar pedido</button>
+    </div>
+
+    <script>
+        // =========================================================
+        const URL_DEL_EXCEL_AQUI = "PEGAR_AQUI_EL_LINK_DEL_CSV";
+        // =========================================================
+
+        let STOCK_DEL_DIA = {};
+
+        async function cargarStockDesdeGoogle() {
+            if(URL_DEL_EXCEL_AQUI === "PEGAR_AQUI_EL_LINK_DEL_CSV") return; 
+
+            try {
+                const response = await fetch(URL_DEL_EXCEL_AQUI);
+                const data = await response.text();
+                
+                const filas = data.split('\n');
+                for(let i = 1; i < filas.length; i++) { 
+                    const columnas = filas[i].split(',');
+                    if(columnas.length >= 2) {
+                        const nombre = columnas[0].trim();
+                        const stock = parseInt(columnas[1].trim());
+                        if(nombre) {
+                            STOCK_DEL_DIA[nombre] = isNaN(stock) ? 0 : stock;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("No se pudo cargar el stock del Excel:", error);
+            }
+        }
+
+        cargarStockDesdeGoogle();
+
+        const catalogo = [
+            {
+                categoria: "Boxes Armados",
+                productos: [
+                    { id: "caja24", nombre: "Box x 24 unidades", precio: 35000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Mini Merengue (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 2 Mini Triple (B)+(N), 2 Mini Avellana (B)+(N), 2 Tapa de limón (B)+(N), 2 Cordobeses (B)+(N), 2 Mini Almendra/Nuez (B)+(N), 2 Mini Maicena." },
+                    { id: "caja13", nombre: "Box x 13 unidades", precio: 25000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 1 Tapas de limón (N), 1 Mini Almendra (B), 1 Mini Maicena." },
+                    { id: "caja7", nombre: "Box x 7 unidades Gourmet", precio: 15000, desc: "1 Mini Kinder (N), 1 Mini Oreo (B), 1 Mini Merengue (N), 2 Mini Avellana (B)+(N), 2 Tapas de limón (B)+(N)." }
+                ]
+            },
+            {
+                categoria: "Alfajores Simples",
+                productos: [
+                    { id: "simp1", nombre: "Cordobés de Dulce de Leche", precio: 5000, desc: "Relleno dulce de leche con baño glaseado." },
+                    { id: "simp2", nombre: "Cordobés de Membrillo", precio: 5000, desc: "Relleno membrillo con baño glaseado." },
+                    { id: "simp3", nombre: "Clásico Cacao", precio: 5000, desc: "Relleno dulce de leche, tapas de cacao, baño semi amargo." },
+                    { id: "simp4", nombre: "Avellanas", precio: 5000, desc: "Relleno d. de leche, tapas de cacao, baño s/amargo (b/n), avellanas trituradas." },
+                    { id: "simp5", nombre: "Merengue Italiano", precio: 5000, desc: "Relleno dulce de leche, tapas de cacao, cubierto de merengue." }
+                ]
+            },
+            {
+                categoria: "Alfajores Especiales",
+                productos: [
+                    { id: "esp1", nombre: "Frutos Rojos", precio: 5500, desc: "Relleno frutos rojos, tapas de cacao, cubierto chocolate (b/n)." },
+                    { id: "esp2", nombre: "Nutella", precio: 5500, desc: "Relleno Nutella, tapas de cacao, cubierto chocolate (b/n)." },
+                    { id: "esp3", nombre: "Pistacho", precio: 5500, desc: "Relleno pistacho, tapas de cacao, cubierto chocolate (b/n)." },
+                    { id: "esp4", nombre: "Triple Dulce de Leche", precio: 5500, desc: "Doble relleno de dulce de leche, cubierto chocolate (b/n)." }
+                ]
+            },
+            {
+                categoria: "Alfajores con Corazón",
+                productos: [
+                    { id: "cor1", nombre: "Corazón de Bon o Bon", precio: 6000, desc: "Relleno d. de leche con corazón de Bon o Bon, cubierto chocolate (b/n)." },
+                    { id: "cor2", nombre: "Corazón de Avellanas", precio: 6000, desc: "Relleno d. de leche con corazón de bombón de avellanas, cubierto chocolate (b/n)." },
+                    { id: "cor3", nombre: "Corazón de Merengue", precio: 6000, desc: "Relleno d. de leche con corazón de merengue, cubierto chocolate (b/n)." },
+                    { id: "cor4", nombre: "Corazón de Oreo", precio: 6000, desc: "Relleno d. de leche con corazón de galleta Oreo, cubierto chocolate (b/n)." },
+                    { id: "cor5", nombre: "Corazón de Kinder", precio: 6000, desc: "Relleno d. de leche con corazón de barrita Kinder, cubierto chocolate (b/n)." }
+                ]
+            }
+        ];
+
+        let modoActual = ''; 
+        let carrito = {}; 
+
+        function formatearMoneda(valor) {
+            return "$ " + valor.toLocaleString('es-AR');
+        }
+
+        async function iniciarPedido(modo) {
+            modoActual = modo;
+            carrito = {}; 
+            
+            if(modo === 'dia' && URL_DEL_EXCEL_AQUI !== "PEGAR_AQUI_EL_LINK_DEL_CSV") {
+                await cargarStockDesdeGoogle(); 
+            }
+
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('pantalla-catalogo').style.display = 'block';
+            document.getElementById('cart-bar').style.display = 'flex';
+            
+            renderizarCatalogo();
+        }
+
+        function volverInicio() {
+            if(confirm("¿Seguro que querés volver? Tu pedido actual se borrará.")){
+                document.getElementById('pantalla-inicio').style.display = 'flex';
+                document.getElementById('pantalla-catalogo').style.display = 'none';
+                document.getElementById('cart-bar').style.display = 'none';
+            }
+        }
+
+        function obtenerProducto(id) {
+            for (let cat of catalogo) {
+                for (let prod of cat.productos) {
+                    if (prod.id === id) return prod;
+                }
+            }
+            return null;
+        }
+
+        function renderizarCatalogo() {
+            const container = document.getElementById('catalog-container');
+            container.innerHTML = '';
+
+            catalogo.forEach(cat => {
+                if (modoActual === 'dia' && cat.categoria === "Boxes Armados") return;
+                if (modoActual === 'finde' && cat.categoria !== "Boxes Armados") return;
+
+                let HTMLCategoria = `<div class="category-title">${cat.categoria}</div>`;
+                let hayProductosEnCategoria = false;
+
+                cat.productos.forEach(prod => {
+                    let stock = null;
+                    
+                    if (modoActual === 'dia') {
+                        stock = STOCK_DEL_DIA[prod.nombre];
+                        if(URL_DEL_EXCEL_AQUI !== "PEGAR_AQUI_EL_LINK_DEL_CSV") {
+                            if (stock === undefined || stock <= 0) return; 
+                        }
+                    }
+
+                    hayProductosEnCategoria = true;
+                    let cantidadMostrada = carrito[prod.id] ? carrito[prod.id].cantidad : 0;
+
+                    let disableSumar = '';
+                    let badgeStock = '';
+
+                    if (modoActual === 'dia' && URL_DEL_EXCEL_AQUI !== "PEGAR_AQUI_EL_LINK_DEL_CSV") {
+                        if (cantidadMostrada >= stock) disableSumar = 'disabled';
+                        badgeStock = `<div class="stock-badge">Stock disponible: ${stock}</div>`;
+                    }
+
+                    // --- ACÁ SE APLICA LA MAGIA DE LA LISTA PROLIJA PARA LOS BOXES ---
+                    let descripcionHTML = `<p class="product-desc">${prod.desc}</p>`;
+                    
+                    if (cat.categoria === "Boxes Armados") {
+                        // Separamos los gustos por la coma y armamos una lista HTML
+                        let listaGustos = prod.desc.split(',').map(item => item.trim().replace('.', ''));
+                        let ulHTML = '<ul class="box-flavor-list">';
+                        listaGustos.forEach(gusto => {
+                            ulHTML += `<li>${gusto}</li>`;
+                        });
+                        ulHTML += '</ul>';
+                        descripcionHTML = ulHTML;
+                    }
+                    // -----------------------------------------------------------------
+
+                    HTMLCategoria += `
+                        <div class="product-card">
+                            <div class="product-header">
+                                <h3 class="product-name">${prod.nombre}</h3>
+                                <span class="product-price">${formatearMoneda(prod.precio)}</span>
+                            </div>
+                            ${descripcionHTML}
+                            ${badgeStock}
+                            <div class="controls">
+                                <button class="btn-qty" onclick="restarProducto('${prod.id}')">-</button>
+                                <span class="qty-value">${cantidadMostrada}</span>
+                                <button class="btn-qty" ${disableSumar} onclick="sumarProducto('${prod.id}')">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if(hayProductosEnCategoria){
+                    container.innerHTML += HTMLCategoria;
+                }
+            });
+            
+            if(container.innerHTML === ''){
+                container.innerHTML = '<p style="text-align:center; color:#888; font-style:italic; margin-top:40px;">Hoy ya no nos queda stock disponible o la vendedora aún no cargó el Excel. ¡Consultá mañana!</p>';
+            }
+
+            actualizarTotal();
+        }
+
+        function sumarProducto(idProducto) {
+            if (!carrito[idProducto]) {
+                const prod = obtenerProducto(idProducto);
+                carrito[idProducto] = { ...prod, cantidad: 0 };
+            }
+            carrito[idProducto].cantidad++;
+            renderizarCatalogo();
+        }
+
+        function restarProducto(idProducto) {
+            if (carrito[idProducto] && carrito[idProducto].cantidad > 0) {
+                carrito[idProducto].cantidad--;
+            }
+            renderizarCatalogo();
+        }
+
+        function actualizarTotal() {
+            let totalPesos = 0; 
+            let totalItems = 0;
+            
+            for (const id in carrito) {
+                totalPesos += carrito[id].cantidad * carrito[id].precio;
+                totalItems += carrito[id].cantidad;
+            }
+            
+            document.getElementById('cart-total').innerText = formatearMoneda(totalPesos);
+            document.getElementById('btn-confirm').disabled = totalItems === 0;
+        }
+
+        function enviarWhatsApp() {
+            const numeroWhatsApp = "5493576527464"; 
+            let tipoPedido = modoActual === 'dia' ? "PARA EL DÍA (Stock Inmediato)" : "ENCARGO PARA EL FIN DE SEMANA";
+            
+            let mensaje = `Hola Dulce Almacén! 👋\nQuiero hacer el siguiente pedido:\n*${tipoPedido}*\n\n`;
+            
+            let cajasTexto = "";
+            let sueltosTexto = "";
+
+            for (const id in carrito) {
+                const item = carrito[id];
+                if (item.cantidad > 0) {
+                    if (id.startsWith("caja")) {
+                        cajasTexto += `• ${item.cantidad}x ${item.nombre} (${formatearMoneda(item.precio * item.cantidad)})\n`;
+                    } else {
+                        sueltosTexto += `• ${item.cantidad}x ${item.nombre} (${formatearMoneda(item.precio * item.cantidad)})\n`;
+                    }
+                }
+            }
+
+            if (cajasTexto !== "") {
+                mensaje += "*📦 BOXES:*\n" + cajasTexto + "\n";
+            }
+            
+            if (sueltosTexto !== "") {
+                mensaje += "*🍫 SUELTOS:*\n" + sueltosTexto + "\n";
+            }
+            
+            let totalFinal = document.getElementById('cart-total').innerText;
+            mensaje += `*Total a abonar: ${totalFinal}*`;
+
+            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
