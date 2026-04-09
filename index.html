@@ -25,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* --- FONDO DE MOSAICO ESTÁTICO --- */
         .mosaic-bg {
             position: fixed;
             top: 0;
@@ -63,7 +62,6 @@
             }
         }
 
-        /* --- ENCABEZADO CON LOGO --- */
         .header {
             text-align: center;
             padding: 20px 20px;
@@ -363,11 +361,87 @@
             width: 100%;
             text-transform: uppercase;
             letter-spacing: 1px;
+            transition: opacity 0.2s;
         }
 
         .btn-whatsapp:disabled {
             background-color: #a5d6a7;
             cursor: not-allowed;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 25px 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: sans-serif;
+            font-size: 15px;
+            box-sizing: border-box;
+            background-color: #fdfbf7;
+            color: var(--text-color);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .btn-cancelar {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            color: var(--text-color);
+            font-size: 15px;
+            font-weight: bold;
+            font-family: sans-serif;
+            cursor: pointer;
+        }
+
+        .btn-enviar-modal {
+            flex: 2;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            background-color: #25D366;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            font-family: sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
         @media (max-width: 480px) {
@@ -408,20 +482,30 @@
             <span class="cart-total-label">Total del pedido:</span>
             <span class="cart-total-value" id="cart-total">$ 0</span>
         </div>
-        <button class="btn-whatsapp" id="btn-confirm" disabled onclick="enviarWhatsApp()">Confirmar pedido</button>
+        <button class="btn-whatsapp" id="btn-confirm" disabled onclick="abrirModalDatos()">Confirmar pedido</button>
+    </div>
+
+    <div class="modal-overlay" id="modal-datos">
+        <div class="modal-content">
+            <div class="category-title" style="margin-top: 0; font-size: 18px;">Tus Datos</div>
+            <input type="text" id="cliente-nombre" placeholder="Tu Nombre completo *" class="form-input">
+            <input type="text" id="cliente-direccion" placeholder="Dirección de envío" class="form-input">
+            <div class="modal-buttons">
+                <button class="btn-cancelar" onclick="cerrarModalDatos()">Atrás</button>
+                <button class="btn-enviar-modal" onclick="enviarWhatsApp()">Enviar pedido</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // =========================================================
         const URL_DEL_EXCEL_AQUI = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVNCGWfo_D1z92Pjz2h1hozk-azG0jBYmW5w8jkjhBCx-ZgyC_mnIEz-xJD2bV4pwE04yKnQGLzJKK/pub?output=csv";
-        // =========================================================
 
         function crearFondoMosaico() {
             const container = document.getElementById('mosaic-bg');
             let tilesHTML = '';
             for (let i = 0; i < 80; i++) {
                 let imgNum = (i % 14) + 1; 
-                tilesHTML += `<div class="mosaic-tile" style="background-image: url('fondo${imgNum}.jpg');"></div>`;
+                tilesHTML += `<div class="mosaic-tile" style="background-image: url('fondo${imgNum}.png');"></div>`;
             }
             container.innerHTML = tilesHTML;
         }
@@ -505,6 +589,10 @@
             document.getElementById('pantalla-inicio').style.display = 'none';
             document.getElementById('pantalla-catalogo').style.display = 'block';
             document.getElementById('cart-bar').style.display = 'flex';
+            
+            document.getElementById('cliente-nombre').value = '';
+            document.getElementById('cliente-direccion').value = '';
+            
             renderizarCatalogo();
         }
 
@@ -512,6 +600,7 @@
             document.getElementById('pantalla-inicio').style.display = 'flex';
             document.getElementById('pantalla-catalogo').style.display = 'none';
             document.getElementById('cart-bar').style.display = 'none';
+            cerrarModalDatos();
         }
 
         function obtenerProductoYVariacion(idVar) {
@@ -577,19 +666,56 @@
             document.getElementById('btn-confirm').disabled = totalItems === 0;
         }
 
+        function abrirModalDatos() {
+            document.getElementById('modal-datos').style.display = 'flex';
+        }
+
+        function cerrarModalDatos() {
+            document.getElementById('modal-datos').style.display = 'none';
+        }
+
         function enviarWhatsApp() {
-            const numeroWhatsApp = "5493563408791"; 
-            let mensaje = `Hola Dulce Almacén! 👋\nQuiero hacer el siguiente pedido:\n*${modoActual === 'dia' ? "PARA EL DÍA" : "ENCARGO FINDE"}*\n\n`;
+            const nombreCliente = document.getElementById('cliente-nombre').value.trim();
+            const direccionCliente = document.getElementById('cliente-direccion').value.trim();
+
+            if (nombreCliente === "") {
+                alert("Por favor, ingresa tu Nombre para confirmar el pedido.");
+                document.getElementById('cliente-nombre').focus();
+                return;
+            }
+
+            const numeroWhatsApp = "5493576527464"; 
+            
+            // Cero emojis. Mensaje súper limpio y sin posibilidad de errores
+            // Uso códigos internos para los acentos así no dependen de tu editor
+            let modoTxt = modoActual === 'dia' ? "PARA EL D\xCDA" : "ENCARGO FINDE";
+            
+            let mensaje = "Hola Dulce Almac\xE9n!\nQuiero hacer el siguiente pedido:\n*" + modoTxt + "*\n\n";
+            
+            mensaje += "*Cliente:* " + nombreCliente + "\n";
+            
+            if (direccionCliente !== "") {
+                mensaje += "*Entrega:* " + direccionCliente + "\n\n";
+            } else {
+                mensaje += "*Entrega:* Acordar con el vendedor\n\n";
+            }
+
             let cajas = "", sueltos = "";
             for (const id in carrito) {
-                const item = carrito[id]; if (item.cantidad <= 0) continue;
-                let txt = `• ${item.cantidad}x ${item.nombre} (${formatearMoneda(item.precio * item.cantidad)})\n`;
+                const item = carrito[id]; 
+                if (item.cantidad <= 0) continue;
+                // Reemplazado el punto redondo por un guión normal de teclado
+                let txt = "- " + item.cantidad + "x " + item.nombre + " (" + formatearMoneda(item.precio * item.cantidad) + ")\n";
                 if (item.esCaja) cajas += txt; else sueltos += txt;
             }
-            if (cajas) mensaje += "*📦 BOXES:*\n" + cajas + "\n";
-            if (sueltos) mensaje += "*🍫 SUELTOS:*\n" + sueltos + "\n";
-            mensaje += `*Total a abonar: ${document.getElementById('cart-total').innerText}*`;
-            window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            
+            if (cajas) mensaje += "*BOXES:*\n" + cajas + "\n";
+            if (sueltos) mensaje += "*SUELTOS:*\n" + sueltos + "\n";
+            
+            mensaje += "*Total a abonar: " + document.getElementById('cart-total').innerText + "*";
+            
+            cerrarModalDatos();
+            window.open("https://wa.me/" + numeroWhatsApp + "?text=" + encodeURIComponent(mensaje), '_blank');
         }
     </script>
 </body>
