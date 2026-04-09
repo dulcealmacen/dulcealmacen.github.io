@@ -559,7 +559,7 @@
                 productos: [
                     { id: "p_esp1", nombre: "Frutos Rojos", precio: 5500, desc: "Relleno de frutos rojos con tapas de cacao.", variaciones: [{ id: "esp1_b", nombre: "Bañado en chocolate blanco", excel: "Frutos Rojos Blanco" }, { id: "esp1_n", nombre: "Bañado en chocolate negro", excel: "Frutos Rojos Negro" }] },
                     { id: "p_esp2", nombre: "Nutella", precio: 5500, desc: "Relleno de Nutella con tapas de cacao.", variaciones: [{ id: "esp2_b", nombre: "Bañado en chocolate blanco", excel: "Nutella Blanco" }, { id: "esp2_n", nombre: "Bañado en chocolate negro", excel: "Nutella Negro" }] },
-                    { id: "p_esp3", nombre: "Pistacho", precio: 5500, desc: "Relleno de pistacho con tapas de cacao.", variaciones: [{ id: "esp3_b", nombre: "Bañado en chocolate blanco", excel: "Pistacho Blanco" }, { id: "esp3_n", nombre: "Bañado en chocolate negro", excel: "Pistacho Negro" }] },
+                    { id: "p_esp3", nombre: "Pistacho", precio: 5500, desc: "Relleno de pistacho con tapas de cacao.", variaciones: [{ id: "esp3_b", nombre: "Bañado en chocolate blanco", excel: "Pistacho Blanco" }, { id: "esp3_n", "nombre": "Bañado en chocolate negro", excel: "Pistacho Negro" }] },
                     { id: "p_esp4", nombre: "Triple Dulce de Leche", precio: 5500, desc: "Doble relleno de dulce de leche.", variaciones: [{ id: "esp4_b", nombre: "Bañado en chocolate blanco", excel: "Triple Dulce de Leche Blanco" }, { id: "esp4_n", nombre: "Bañado en chocolate negro", excel: "Triple Dulce de Leche Negro" }] }
                 ]
             },
@@ -618,26 +618,41 @@
             const container = document.getElementById('catalog-container');
             container.innerHTML = '';
             catalogo.forEach(cat => {
-                if (modoActual === 'dia' && cat.categoria === "Boxes Armados") return;
                 if (modoActual === 'finde' && cat.categoria !== "Boxes Armados") return;
+                
                 let HTMLCategoria = `<div class="category-title">${cat.categoria}</div>`;
                 let hayProductosEnCategoria = false;
+                
                 cat.productos.forEach(prod => {
                     let varsARenderizar = modoActual === 'dia' ? prod.variaciones.filter(v => (STOCK_DEL_DIA[v.excel] || 0) > 0) : prod.variaciones;
                     if (varsARenderizar.length === 0) return; 
                     hayProductosEnCategoria = true;
+                    
                     let descripcionHTML = `<p class="product-desc">${prod.desc}</p>`;
                     if (cat.categoria === "Boxes Armados") {
                         let listaGustos = prod.desc.split(',').map(item => item.trim().replace('.', ''));
                         descripcionHTML = '<ul class="box-flavor-list">' + listaGustos.map(g => `<li>${g}</li>`).join('') + '</ul>';
                     }
-                    let htmlVariaciones = cat.categoria === "Boxes Armados" ? 
-                        `<div class="controls" style="margin-top: 10px;"><button class="btn-qty" onclick="restarProducto('${varsARenderizar[0].id}')">-</button><span class="qty-value">${carrito[varsARenderizar[0].id]?.cantidad || 0}</span><button class="btn-qty" onclick="sumarProducto('${varsARenderizar[0].id}')">+</button></div>` :
-                        '<div class="variations-container">' + varsARenderizar.map(v => {
+                    
+                    let htmlVariaciones = '';
+                    if (cat.categoria === "Boxes Armados") {
+                        let v = varsARenderizar[0];
+                        let qty = carrito[v.id]?.cantidad || 0;
+                        let stock = STOCK_DEL_DIA[v.excel] || 0;
+                        let disableBtn = (modoActual === 'dia' && qty >= stock) ? 'disabled' : '';
+                        let stockInfo = modoActual === 'dia' ? `<span class="var-stock" style="margin-right: auto;">Stock: ${stock} disponibles</span>` : '';
+                        
+                        htmlVariaciones = `<div class="controls" style="margin-top: 10px; width: 100%; display: flex; align-items: center;">${stockInfo}<button class="btn-qty" onclick="restarProducto('${v.id}')">-</button><span class="qty-value">${qty}</span><button class="btn-qty" ${disableBtn} onclick="sumarProducto('${v.id}')">+</button></div>`;
+                    } else {
+                        htmlVariaciones = '<div class="variations-container">' + varsARenderizar.map(v => {
                             let qty = carrito[v.id]?.cantidad || 0;
                             let stock = STOCK_DEL_DIA[v.excel] || 0;
-                            return `<div class="variation-row"><div class="var-info"><span class="var-name">${v.nombre}</span>${modoActual === 'dia' ? `<span class="var-stock">Stock: ${stock} disponibles</span>` : ''}</div><div class="controls"><button class="btn-qty" onclick="restarProducto('${v.id}')">-</button><span class="qty-value">${qty}</span><button class="btn-qty" ${modoActual === 'dia' && qty >= stock ? 'disabled' : ''} onclick="sumarProducto('${v.id}')">+</button></div></div>`;
+                            let disableBtn = (modoActual === 'dia' && qty >= stock) ? 'disabled' : '';
+                            let stockInfo = modoActual === 'dia' ? `<span class="var-stock">Stock: ${stock} disponibles</span>` : '';
+                            return `<div class="variation-row"><div class="var-info"><span class="var-name">${v.nombre}</span>${stockInfo}</div><div class="controls"><button class="btn-qty" onclick="restarProducto('${v.id}')">-</button><span class="qty-value">${qty}</span><button class="btn-qty" ${disableBtn} onclick="sumarProducto('${v.id}')">+</button></div></div>`;
                         }).join('') + '</div>';
+                    }
+                    
                     HTMLCategoria += `<div class="product-card"><div class="product-header"><h3 class="product-name">${prod.nombre}</h3><span class="product-price">${formatearMoneda(prod.precio)}</span></div>${descripcionHTML}${htmlVariaciones}</div>`;
                 });
                 if(hayProductosEnCategoria) container.innerHTML += HTMLCategoria;
@@ -686,8 +701,6 @@
 
             const numeroWhatsApp = "5493576527464"; 
             
-            // Cero emojis. Mensaje súper limpio y sin posibilidad de errores
-            // Uso códigos internos para los acentos así no dependen de tu editor
             let modoTxt = modoActual === 'dia' ? "PARA EL D\xCDA" : "ENCARGO FINDE";
             
             let mensaje = "Hola Dulce Almac\xE9n!\nQuiero hacer el siguiente pedido:\n*" + modoTxt + "*\n\n";
@@ -704,7 +717,6 @@
             for (const id in carrito) {
                 const item = carrito[id]; 
                 if (item.cantidad <= 0) continue;
-                // Reemplazado el punto redondo por un guión normal de teclado
                 let txt = "- " + item.cantidad + "x " + item.nombre + " (" + formatearMoneda(item.precio * item.cantidad) + ")\n";
                 if (item.esCaja) cajas += txt; else sueltos += txt;
             }
