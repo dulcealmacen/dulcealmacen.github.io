@@ -518,6 +518,7 @@
                 const response = await fetch(URL_DEL_EXCEL_AQUI);
                 const data = await response.text();
                 const filas = data.split('\n');
+                STOCK_DEL_DIA = {};
                 for(let i = 1; i < filas.length; i++) { 
                     const columnas = filas[i].split(',');
                     if(columnas.length >= 2) {
@@ -533,15 +534,13 @@
             }
         }
 
-        cargarStockDesdeGoogle();
-
         const catalogo = [
             {
                 categoria: "Boxes Armados",
                 productos: [
-                    { id: "p_caja24", nombre: "Box x 24 unidades", precio: 35000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Mini Merengue (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 2 Mini Triple (B)+(N), 2 Mini Avellana (B)+(N), 2 Tapa de limón (B)+(N), 2 Cordobeses (B)+(N), 2 Mini Almendra/Nuez (B)+(N), 2 Mini Maicena.", variaciones: [{ id: "caja24", nombre: "", excel: "Box x 24 unidades" }] },
-                    { id: "p_caja13", nombre: "Box x 13 unidades", precio: 25000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 1 Tapas de limón (N), 1 Mini Almendra (B), 1 Mini Maicena.", variaciones: [{ id: "caja13", nombre: "", excel: "Box x 13 unidades" }] },
-                    { id: "p_caja7", nombre: "Box x 7 unidades Gourmet", precio: 15000, desc: "1 Mini Kinder (N), 1 Mini Oreo (B), 1 Mini Merengue (N), 2 Mini Avellana (B)+(N), 2 Tapas de limón (B)+(N).", variaciones: [{ id: "caja7", nombre: "", excel: "Box x 7 unidades Gourmet" }] }
+                    { id: "p_caja24", nombre: "Box x 24 unidades", precio: 35000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Mini Merengue (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 2 Mini Triple (B)+(N), 2 Mini Ferrero (B)+(N), 2 Tapa de limón (B)+(N), 2 Cordobeses (B)+(N), 2 Mini Almendra/Nuez (B)+(N), 2 Mini Maicena.", variaciones: [{ id: "caja24", nombre: "Box x 24 unidades", excel: "Box x 24 unidades" }] },
+                    { id: "p_caja13", nombre: "Box x 13 unidades", precio: 25000, desc: "2 Mini Kinder (B)+(N), 2 Mini Oreo (B)+(N), 2 Frutos Rojos (B)+(N), 2 Mini Nutella (B)+(N), 2 Mini Pistacho (B)+(N), 1 Tapas de limón (N), 1 Mini Almendra (B), 1 Mini Maicena.", variaciones: [{ id: "caja13", nombre: "Box x 13 unidades", excel: "Box x 13 unidades" }] },
+                    { id: "p_caja7", nombre: "Box x 7 unidades Gourmet", precio: 15000, desc: "1 Mini Kinder (N), 1 Mini Oreo (B), 1 Mini Merengue (N), 2 Mini Ferrero (B)+(N), 2 Tapas de limón (B)+(N).", variaciones: [{ id: "caja7", nombre: "Box x 7 unidades Gourmet", excel: "Box x 7 unidades Gourmet" }] }
                 ]
             },
             {
@@ -550,7 +549,7 @@
                     { id: "p_simp1", nombre: "Cordobés de Dulce de Leche", precio: 5000, desc: "Relleno de dulce de leche.", variaciones: [{ id: "simp1", nombre: "Bañado en glaseado", excel: "Cordobés de Dulce de Leche" }] },
                     { id: "p_simp2", nombre: "Cordobés de Membrillo", precio: 5000, desc: "Relleno de membrillo.", variaciones: [{ id: "simp2", nombre: "Bañado en glaseado", excel: "Cordobés de Membrillo" }] },
                     { id: "p_simp3", nombre: "Clásico Cacao", precio: 5000, desc: "Relleno de dulce de leche con tapas de cacao.", variaciones: [{ id: "simp3", nombre: "Bañado en chocolate negro", excel: "Clásico Cacao" }] },
-                    { id: "p_simp4", nombre: "Avellanas", precio: 5000, desc: "Relleno dulce de leche, tapas de cacao y avellanas trituradas.", variaciones: [{ id: "simp4_b", nombre: "Bañado en chocolate blanco", excel: "Avellanas Blanco" }, { id: "simp4_n", nombre: "Bañado en chocolate negro", excel: "Avellanas Negro" }] },
+                    { id: "p_simp4", nombre: "Avellanas", precio: 5000, desc: "Relleno dulce de leche, tapas de cacao y lluvia de Avellanas.", variaciones: [{ id: "simp4_b", nombre: "Bañado en chocolate blanco", excel: "Avellanas Blanco" }, { id: "simp4_n", nombre: "Bañado en chocolate negro", excel: "Avellanas Negro" }] },
                     { id: "p_simp5", nombre: "Merengue Italiano", precio: 5000, desc: "Relleno dulce de leche con tapas de cacao.", variaciones: [{ id: "simp5", nombre: "Cubierto de merengue", excel: "Merengue Italiano" }] }
                 ]
             },
@@ -559,7 +558,7 @@
                 productos: [
                     { id: "p_esp1", nombre: "Frutos Rojos", precio: 5500, desc: "Relleno de frutos rojos con tapas de cacao.", variaciones: [{ id: "esp1_b", nombre: "Bañado en chocolate blanco", excel: "Frutos Rojos Blanco" }, { id: "esp1_n", nombre: "Bañado en chocolate negro", excel: "Frutos Rojos Negro" }] },
                     { id: "p_esp2", nombre: "Nutella", precio: 5500, desc: "Relleno de Nutella con tapas de cacao.", variaciones: [{ id: "esp2_b", nombre: "Bañado en chocolate blanco", excel: "Nutella Blanco" }, { id: "esp2_n", nombre: "Bañado en chocolate negro", excel: "Nutella Negro" }] },
-                    { id: "p_esp3", nombre: "Pistacho", precio: 5500, desc: "Relleno de pistacho con tapas de cacao.", variaciones: [{ id: "esp3_b", nombre: "Bañado en chocolate blanco", excel: "Pistacho Blanco" }, { id: "esp3_n", "nombre": "Bañado en chocolate negro", excel: "Pistacho Negro" }] },
+                    { id: "p_esp3", nombre: "Pistacho", precio: 5500, desc: "Relleno de pistacho con tapas de cacao.", variaciones: [{ id: "esp3_b", nombre: "Bañado en chocolate blanco", excel: "Pistacho Blanco" }, { id: "esp3_n", nombre: "Bañado en chocolate negro", excel: "Pistacho Negro" }] },
                     { id: "p_esp4", nombre: "Triple Dulce de Leche", precio: 5500, desc: "Doble relleno de dulce de leche.", variaciones: [{ id: "esp4_b", nombre: "Bañado en chocolate blanco", excel: "Triple Dulce de Leche Blanco" }, { id: "esp4_n", nombre: "Bañado en chocolate negro", excel: "Triple Dulce de Leche Negro" }] }
                 ]
             },
@@ -567,7 +566,7 @@
                 categoria: "Alfajores con Corazón",
                 productos: [
                     { id: "p_cor1", nombre: "Corazón de Bon o Bon", precio: 6000, desc: "Relleno dulce de leche con corazón de Bon o Bon.", variaciones: [{ id: "cor1_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Bon o Bon Blanco" }, { id: "cor1_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Bon o Bon Negro" }] },
-                    { id: "p_cor2", nombre: "Corazón de Avellanas", precio: 6000, desc: "Relleno dulce de leche con corazón de bombón de avellanas.", variaciones: [{ id: "cor2_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Avellanas Blanco" }, { id: "cor2_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Avellanas Negro" }] },
+                    { id: "p_cor2", nombre: "Corazón de Ferrero Rocher", precio: 6000, desc: "Relleno dulce de leche con Corazón de Ferrero Rocher.", variaciones: [{ id: "cor2_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Ferrero Rocher Blanco" }, { id: "cor2_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Ferrero Rocher Negro" }] },
                     { id: "p_cor3", nombre: "Corazón de Merengue", precio: 6000, desc: "Relleno dulce de leche con corazón de merengue.", variaciones: [{ id: "cor3_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Merengue Blanco" }, { id: "cor3_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Merengue Negro" }] },
                     { id: "p_cor4", nombre: "Corazón de Oreo", precio: 6000, desc: "Relleno dulce de leche con corazón de galleta Oreo.", variaciones: [{ id: "cor4_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Oreo Blanco" }, { id: "cor4_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Oreo Negro" }] },
                     { id: "p_cor5", nombre: "Corazón de Kinder", precio: 6000, desc: "Relleno dulce de leche con corazón de barrita Kinder.", variaciones: [{ id: "cor5_b", nombre: "Bañado en chocolate blanco", excel: "Corazón de Kinder Blanco" }, { id: "cor5_n", nombre: "Bañado en chocolate negro", excel: "Corazón de Kinder Negro" }] }
@@ -589,10 +588,6 @@
             document.getElementById('pantalla-inicio').style.display = 'none';
             document.getElementById('pantalla-catalogo').style.display = 'block';
             document.getElementById('cart-bar').style.display = 'flex';
-            
-            document.getElementById('cliente-nombre').value = '';
-            document.getElementById('cliente-direccion').value = '';
-            
             renderizarCatalogo();
         }
 
@@ -640,19 +635,17 @@
                         let qty = carrito[v.id]?.cantidad || 0;
                         let stock = STOCK_DEL_DIA[v.excel] || 0;
                         let disableBtn = (modoActual === 'dia' && qty >= stock) ? 'disabled' : '';
-                        let stockInfo = modoActual === 'dia' ? `<span class="var-stock" style="margin-right: auto;">Stock: ${stock} disponibles</span>` : '';
-                        
+                        let stockInfo = modoActual === 'dia' ? `<span class="var-stock" style="margin-right: auto;">Stock: ${stock}</span>` : '';
                         htmlVariaciones = `<div class="controls" style="margin-top: 10px; width: 100%; display: flex; align-items: center;">${stockInfo}<button class="btn-qty" onclick="restarProducto('${v.id}')">-</button><span class="qty-value">${qty}</span><button class="btn-qty" ${disableBtn} onclick="sumarProducto('${v.id}')">+</button></div>`;
                     } else {
                         htmlVariaciones = '<div class="variations-container">' + varsARenderizar.map(v => {
                             let qty = carrito[v.id]?.cantidad || 0;
                             let stock = STOCK_DEL_DIA[v.excel] || 0;
                             let disableBtn = (modoActual === 'dia' && qty >= stock) ? 'disabled' : '';
-                            let stockInfo = modoActual === 'dia' ? `<span class="var-stock">Stock: ${stock} disponibles</span>` : '';
+                            let stockInfo = modoActual === 'dia' ? `<span class="var-stock">Stock: ${stock}</span>` : '';
                             return `<div class="variation-row"><div class="var-info"><span class="var-name">${v.nombre}</span>${stockInfo}</div><div class="controls"><button class="btn-qty" onclick="restarProducto('${v.id}')">-</button><span class="qty-value">${qty}</span><button class="btn-qty" ${disableBtn} onclick="sumarProducto('${v.id}')">+</button></div></div>`;
                         }).join('') + '</div>';
                     }
-                    
                     HTMLCategoria += `<div class="product-card"><div class="product-header"><h3 class="product-name">${prod.nombre}</h3><span class="product-price">${formatearMoneda(prod.precio)}</span></div>${descripcionHTML}${htmlVariaciones}</div>`;
                 });
                 if(hayProductosEnCategoria) container.innerHTML += HTMLCategoria;
@@ -663,7 +656,7 @@
         function sumarProducto(idVar) {
             if (!carrito[idVar]) {
                 const data = obtenerProductoYVariacion(idVar);
-                carrito[idVar] = { id: idVar, nombre: data.variacion.excel, precio: data.producto.precio, esCaja: data.producto.id.startsWith("p_caja"), cantidad: 0 };
+                carrito[idVar] = { nombre: data.variacion.excel, precio: data.producto.precio, esCaja: data.producto.id.startsWith("p_caja"), cantidad: 0 };
             }
             carrito[idVar].cantidad++;
             renderizarCatalogo();
@@ -676,7 +669,10 @@
 
         function actualizarTotal() {
             let totalPesos = 0; let totalItems = 0;
-            for (const id in carrito) { totalPesos += carrito[id].cantidad * carrito[id].precio; totalItems += carrito[id].cantidad; }
+            for (const id in carrito) { 
+                totalPesos += carrito[id].cantidad * carrito[id].precio; 
+                totalItems += carrito[id].cantidad; 
+            }
             document.getElementById('cart-total').innerText = formatearMoneda(totalPesos);
             document.getElementById('btn-confirm').disabled = totalItems === 0;
         }
@@ -692,41 +688,24 @@
         function enviarWhatsApp() {
             const nombreCliente = document.getElementById('cliente-nombre').value.trim();
             const direccionCliente = document.getElementById('cliente-direccion').value.trim();
-
             if (nombreCliente === "") {
-                alert("Por favor, ingresa tu Nombre para confirmar el pedido.");
-                document.getElementById('cliente-nombre').focus();
+                alert("Por favor, ingresá tu Nombre.");
                 return;
             }
-
             const numeroWhatsApp = "5493576527464"; 
-            
             let modoTxt = modoActual === 'dia' ? "PARA EL D\xCDA" : "ENCARGO FINDE";
-            
             let mensaje = "Hola Dulce Almac\xE9n!\nQuiero hacer el siguiente pedido:\n*" + modoTxt + "*\n\n";
-            
             mensaje += "*Cliente:* " + nombreCliente + "\n";
-            
-            if (direccionCliente !== "") {
-                mensaje += "*Entrega:* " + direccionCliente + "\n\n";
-            } else {
-                mensaje += "*Entrega:* Acordar con el vendedor\n\n";
-            }
-
+            mensaje += "*Entrega:* " + (direccionCliente || "Acordar con el vendedor") + "\n\n";
             let cajas = "", sueltos = "";
             for (const id in carrito) {
-                const item = carrito[id]; 
-                if (item.cantidad <= 0) continue;
+                const item = carrito[id]; if (item.cantidad <= 0) continue;
                 let txt = "- " + item.cantidad + "x " + item.nombre + " (" + formatearMoneda(item.precio * item.cantidad) + ")\n";
                 if (item.esCaja) cajas += txt; else sueltos += txt;
             }
-            
             if (cajas) mensaje += "*BOXES:*\n" + cajas + "\n";
             if (sueltos) mensaje += "*SUELTOS:*\n" + sueltos + "\n";
-            
             mensaje += "*Total a abonar: " + document.getElementById('cart-total').innerText + "*";
-            
-            cerrarModalDatos();
             window.open("https://wa.me/" + numeroWhatsApp + "?text=" + encodeURIComponent(mensaje), '_blank');
         }
     </script>
